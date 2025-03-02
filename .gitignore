@@ -1,0 +1,15 @@
+# Ignore Python cache and logs
+__pycache__/
+logs/
+*.log
+
+# Ignore virtual environment
+venv/
+
+# Ignore database files
+*.db
+
+# Ignore large datasets 
+data/
+*.csv
+*.xlsx

@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    container_name: retail_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: retail_project
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  etl:
+    build: .
+    container_name: etl_container
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:1234@postgres:5432/retail_project
+    command: ["python", "scripts/query_data.py"]
+
+  rfm:
+    build: .
+    container_name: rfm_analysis
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:1234@postgres:5432/retail_project
+    command: ["python", "scripts/rfm_customer_seg.py"]
+
+  superset:
+    image: apache/superset
+    container_name: superset
+    restart: always
+    ports:
+      - "8088:8088"
+    depends_on:
+      - postgres
+    environment:
+      SUPERSET_SECRET_KEY: "mysuperset"
+    volumes:
+      - ./superset_config.py:/app/pythonpath/superset_config.py
+    command: >
+      sh -c "superset db upgrade && 
+             superset init && 
+             superset run -p 8088 --with-threads --reload --debugger"
+
+volumes:
+  pg_data:
