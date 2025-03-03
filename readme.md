@@ -1,6 +1,6 @@
 # RETAIL360: End-to-End Customer Analytics Pipeline
 
-![RETAIL360 Dashboard](visualizations/retail_dashboard.png)
+![RETAIL360 Dashboard](visualizations/retail_dashboard.jpg)
 
 ## Overview
 
